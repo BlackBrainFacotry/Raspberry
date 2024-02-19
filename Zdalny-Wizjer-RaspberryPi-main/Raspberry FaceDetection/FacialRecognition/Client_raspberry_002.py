@@ -42,7 +42,7 @@ def process_frame(frame, face_cascade, recognizer, font, min_w, min_h):
     for (x, y, w, h) in faces:
         id, confidence = recognizer.predict(gray[y:y+h, x:x+w])
         if confidence < 100:
-            name = names[id]
+            name = names[id] if id < len(names) else "unknown" 
             confidence_text = f"{confidence}%"
         else:
             name = "unknown"
