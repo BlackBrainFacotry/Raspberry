@@ -1,0 +1,42 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+      
+  <item android:id="@+id/addPicture"
+         android:showAsAction="never"
+        android:title="Add picture"
+         android:actionViewClass="android.widget.SearchView"
+         />
+  <item android:id="@+id/pearsonList"
+         android:showAsAction="never"
+        android:title="Restart"
+         android:actionViewClass="android.widget.SearchView"/>
+  <item android:id="@+id/logout"
+         android:showAsAction="never"
+        android:title="Logout"
+         android:actionViewClass="android.widget.SearchView"/>
+  
+</menu>
+
+<!-- Code to implement into Activity:
+
+Android.Widget.SearchView searchView;
+public override bool OnCreateOptionsMenu(IMenu menu)
+{
+  this.MenuInflater.Inflate(Resource.Menu.toolbarListMenu, menu);
+
+  var searchItem = menu.FindItem(Resource.Id.action_search);
+
+  searchView = searchItem.ActionProvider.JavaCast<Android.Widget.SearchView>();
+
+  searchView.QueryTextSubmit += (sender, args) =>
+  {
+    Toast.MakeText(this, "You searched: " + args.Query, ToastLength.Short).Show();
+
+  };
+
+
+  return base.OnCreateOptionsMenu(menu);
+}
+
+-->
