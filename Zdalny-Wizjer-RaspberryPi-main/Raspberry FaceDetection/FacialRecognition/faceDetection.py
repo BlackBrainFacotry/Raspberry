@@ -1,44 +1,49 @@
-'''
-Haar Cascade Face detection with OpenCV  
-    Based on tutorial by pythonprogramming.net
-    Visit original post: https://pythonprogramming.net/haar-cascade-face-eye-detection-python-opencv-tutorial/  
-Adapted by Marcelo Rovai - MJRoBot.org @ 7Feb2018 
-'''
-
-import numpy as np
 import cv2
 
-# multiple cascades: https://github.com/Itseez/opencv/tree/master/data/haarcascades
-faceCascade = cv2.CascadeClassifier('Cascades/haarcascade_frontalface_default.xml')
+# Constants for the script
+CASCADE_PATH = 'Cascades/haarcascade_frontalface_default.xml'
+VIDEO_WIDTH = 640
+VIDEO_HEIGHT = 480
+ESC_KEY_CODE = 27
 
-cap = cv2.VideoCapture(0)
-cap.set(3,640) # set Width
-cap.set(4,480) # set Height
+def main():
+    # Load the Haar Cascade for face detection
+    face_cascade = cv2.CascadeClassifier(CASCADE_PATH)
+    if face_cascade.empty():
+        print("Error loading cascade file. Check the path.")
+        return
 
-while True:
-    ret, img = cap.read()
-    img = cv2.flip(img, -1)
-    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-    faces = faceCascade.detectMultiScale(
-        gray,
-        
-        scaleFactor=1.2,
-        minNeighbors=5
-        ,     
-        minSize=(20, 20)
-    )
+    # Initialize video capture
+    cap = cv2.VideoCapture(0)
+    cap.set(3, VIDEO_WIDTH)  # set video width
+    cap.set(4, VIDEO_HEIGHT)  # set video height
 
-    for (x,y,w,h) in faces:
-        cv2.rectangle(img,(x,y),(x+w,y+h),(255,0,0),2)
-        roi_gray = gray[y:y+h, x:x+w]
-        roi_color = img[y:y+h, x:x+w]
-        
+    while True:
+        ret, img = cap.read()
+        if not ret:
+            print("Failed to capture image.")
+            break
 
-    cv2.imshow('video',img)
+        img = cv2.flip(img, -1)  # Flip the image vertically
+        gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+        faces = face_cascade.detectMultiScale(
+            gray,
+            scaleFactor=1.2,
+            minNeighbors=5,
+            minSize=(20, 20)
+        )
 
-    k = cv2.waitKey(30) & 0xff
-    if k == 27: # press 'ESC' to quit
-        break
+        for (x, y, w, h) in faces:
+            cv2.rectangle(img, (x, y), (x + w, y + h), (255, 0, 0), 2)
 
-cap.release()
-cv2.destroyAllWindows()
+        cv2.imshow('video', img)
+
+        k = cv2.waitKey(30) & 0xff
+        if k == ESC_KEY_CODE:  # Press 'ESC' to quit
+            break
+
+    cap.release()
+    cv2.destroyAllWindows()
+
+if __name__ == "__main__":
+    main()
