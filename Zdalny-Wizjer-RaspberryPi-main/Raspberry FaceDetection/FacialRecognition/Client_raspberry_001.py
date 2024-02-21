@@ -60,6 +60,31 @@ async def process_frame(websocket):
     cam.release()
     cv2.destroyAllWindows()
 
+
+async def train_model(client_socket):
+	# Path for face image database
+	path = 'dataset'
+	if not os.path.exists('trainer'):os.makedirs('trainer')
+		
+	recognizer = cv2.face.LBPHFaceRecognizer_create()
+	detector = cv2.CascadeClassifier("haarcascade_frontalface_default.xml")
+
+	
+
+	print ("\n [INFO] Training faces. It will take a few seconds. Wait ...")
+	faces,ids = getImagesAndLabels(path)
+	recognizer.train(faces, np.array(ids))
+
+	# Save the model into trainer/trainer.yml
+	recognizer.write('trainer/trainer.yml') # recognizer.save() worked on Mac, but not on Pi
+
+	# Print the numer of faces trained and end program
+	print("\n [INFO] {0} faces trained. Exiting Program".format(len(np.unique(ids))))
+
+	message = "{:<100}".format("Get_train_model")
+	await client_socket.send(message.encode())      
+
+
 # Function to handle commands from websocket
 async def handle_commands(websocket):
     await return_name_client(websocket)
